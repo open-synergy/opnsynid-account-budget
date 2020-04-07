@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+budget_type_employee,budget.type - user,model_budget_type,base.group_user,1,1,1,1
+budget_type_all,budget.type - all,model_budget_type,,1,0,0,0
+budget_version_employee,budget.version - user,model_budget_version,base.group_user,1,1,1,1
+budget_version_all,budget.version - all,model_budget_version,,1,0,0,0
+budget_budget_employee,budget.budget - user,model_budget_budget,base.group_user,1,1,1,1
+budget_budget_all,budget.budget - all,model_budget_budget,,1,0,0,0
+budget_detail_employee,budget.budget - user,model_budget_detail,base.group_user,1,1,1,1
+budget_detail_all,budget.budget - all,model_budget_detail,,1,0,0,0
+budget_move_line_all,budget.move_line - all,model_budget_move_line,,1,0,0,0
+budget_move_line_summary_all,budget.move_line_summary - all,model_budget_move_line_summary,,1,0,0,0
+budget_summary_all,budget.summary - all,model_budget_summary,,1,0,0,0
+budget_detail_summary_all,budget.summary - all,model_budget_detail_summary,,1,0,0,0
