@@ -36,6 +36,9 @@ class BudgetType(models.Model):
         relation="rel_budget_type_2_account",
         column1="type_id",
         column2="account_id",
+        domain=[
+            ("type", "not in", ["view", "consolidation", "closed"])
+        ]
     )
     budget_confirm_grp_ids = fields.Many2many(
         string="Allow To Confirm Budget",

@@ -10,7 +10,25 @@
     <field name="model">budget.budget</field>
     <field name="arch" type="xml">
         <search>
-
+            <field name="name"/>
+            <field name="company_id" groups="base.group_multi_company"/>
+            <field name="type_id"/>
+            <field name="period_id"/>
+            <field name="user_id"/>
+            <field name="state"/>
+            <group name="dom_state" string="State">
+                <filter name="dom_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="dom_confirm" string="Waiting for Approval" domain="[('state','=','confirm')]"/>
+                <filter name="dom_valid" string="Approved" domain="[('state','=','valid')]"/>
+                <filter name="dom_cancel" string="Cancel" domain="[('state','=','cancel')]"/>
+            </group>
+            <group name="groupby" string="Group By..">
+                <filter name="grp_company" string="Company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                <filter name="grp_type" string="Type" context="{'group_by':'type_id'}"/>
+                <filter name="grp_version" string="Version" context="{'group_by':'version_id'}"/>
+                <filter name="grp_period" string="Period" context="{'group_by':'period_id'}"/>
+                <filter name="grp_responsible" string="Responsible" context="{'group_by':'user_id'}"/>
+            </group>
         </search>
     </field>
 </record>
@@ -63,6 +81,7 @@
                         <field name="company_id" groups="base.group_multi_company"/>
                         <field name="type_id"/>
                         <field name="allowed_account_ids" widget="many2many_tags" invisible="1"/>
+                        <field name="user_id"/>
                     </group>
                     <group name="group_1_2">
                         <field name="version_id"/>

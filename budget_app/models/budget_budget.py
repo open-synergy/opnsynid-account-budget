@@ -123,6 +123,7 @@ class BudgetBudget(models.Model):
         string="Allowed Accounts",
         comodel_name="account.account",
         compute="_compute_allowed_account_ids",
+        relation="rel_budget_2_allowed_account",
         store=False,
     )
     detail_ids = fields.One2many(
@@ -235,6 +236,66 @@ class BudgetBudget(models.Model):
         comodel_name="res.users",
         readonly=True,
     )
+
+    @api.multi
+    def action_confirm(self):
+        for document in self:
+            document.write(document._prepare_confirm_data())
+
+    @api.multi
+    def action_approve(self):
+        for document in self:
+            document.write(document._prepare_approve_data())
+
+    @api.multi
+    def action_cancel(self):
+        for document in self:
+            document.write(document._prepare_cancel_data())
+
+    @api.multi
+    def action_restart(self):
+        for document in self:
+            document.write(document._prepare_restart_data())
+
+    @api.multi
+    def _prepare_confirm_data(self):
+        self.ensure_one()
+        return {
+            "state": "confirm",
+            "confirm_date": fields.Datetime.now(),
+            "confirm_user_id": self.env.user.id,
+        }
+
+    @api.multi
+    def _prepare_approve_data(self):
+        self.ensure_one()
+        return {
+            "state": "valid",
+            "approve_date": fields.Datetime.now(),
+            "approve_user_id": self.env.user.id,
+        }
+
+    @api.multi
+    def _prepare_cancel_data(self):
+        self.ensure_one()
+        return {
+            "state": "cancel",
+            "cancel_date": fields.Datetime.now(),
+            "cancel_user_id": self.env.user.id,
+        }
+
+    @api.multi
+    def _prepare_restart_data(self):
+        self.ensure_one()
+        return {
+            "state": "draft",
+            "confirm_date": False,
+            "confirm_user_id": False,
+            "approve_date": False,
+            "approve_user_id": False,
+            "cancel_date": False,
+            "cancel_user_id": False,
+        }
 
     @api.multi
     def unlink(self):

@@ -47,7 +47,9 @@
                         </group>
                     </page>
                     <page name="account" string="Allowed Accounts">
-                        <field name="allowed_account_ids"/>
+                        <group name="account_1" colspan="4" col="2">
+                            <field name="allowed_account_ids" widget="many2many_tags"/>
+                        </group>
                     </page>
                     <page name="workflow" string="Workflow Policy">
                         <group name="workflow_1" colspan="4" col="2">
