@@ -11,3 +11,4 @@ budget_move_line_all,budget.move_line - all,model_budget_move_line,,1,0,0,0
 budget_move_line_summary_all,budget.move_line_summary - all,model_budget_move_line_summary,,1,0,0,0
 budget_summary_all,budget.summary - all,model_budget_summary,,1,0,0,0
 budget_detail_summary_all,budget.summary - all,model_budget_detail_summary,,1,0,0,0
+budget_account_all,budget.account - all,model_budget_account,,1,0,0,0

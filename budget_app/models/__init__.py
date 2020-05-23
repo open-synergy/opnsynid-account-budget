@@ -7,6 +7,7 @@ from . import (
     budget_type,
     budget_budget,
     budget_detail,
+    budget_account,
     budget_move_line,
     budget_move_line_summary,
     budget_detail_summary,
