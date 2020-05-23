@@ -32,39 +32,39 @@ class BudgetSummary(models.Model):
     def _select(self):
         select_str = """
         SELECT
-            row_number() OVER() as id,
-            a.id AS budget_id,
-            c.account_id AS account_id,
+            a.id AS id,
+            a.budget_id AS budget_id,
+            a.account_id AS account_id,
             CASE
                 WHEN
-                    d.amount IS NOT NULL
+                    b.amount IS NOT NULL
                 THEN
-                    d.amount
+                    b.amount
                 ELSE 0.0 END AS amount_planned,
             CASE
                 WHEN
-                    e.amount IS NOT NULL
+                    c.amount IS NOT NULL
                 THEN
-                    e.amount
+                    c.amount
                 ELSE 0.0 END AS amount_realized,
             (
             CASE
                 WHEN
-                    d.amount IS NOT NULL
+                    b.amount IS NOT NULL
                 THEN
-                    d.amount ELSE 0.0 END -
+                    b.amount ELSE 0.0 END -
             CASE
                 WHEN
-                e.amount IS NOT NULL
+                c.amount IS NOT NULL
             THEN
-                e.amount ELSE 0.0 END
+                c.amount ELSE 0.0 END
             ) AS amount_diff
         """
         return select_str
 
     def _from(self):
         from_str = """
-        budget_budget AS a
+        budget_account AS a
         """
         return from_str
 
@@ -76,12 +76,11 @@ class BudgetSummary(models.Model):
 
     def _join(self):
         join_str = """
-        JOIN budget_type AS b ON a.type_id = b.id
-        JOIN rel_budget_type_2_account AS c ON b.id = c.type_id
-        LEFT JOIN budget_detail_summary AS d ON  a.id = d.budget_id AND
-                                            c.account_id = d.account_id
-        LEFT JOIN budget_move_line_summary AS e ON   a.id = e.budget_id AND
-                                                c.account_id = e.account_id
+        LEFT JOIN budget_detail_summary AS b ON  a.budget_id = b.budget_id AND
+                                            a.account_id = b.account_id
+        LEFT JOIN budget_move_line_summary AS c ON
+            a.budget_id = c.budget_id AND
+            a.account_id = c.account_id
         """
         return join_str
 
