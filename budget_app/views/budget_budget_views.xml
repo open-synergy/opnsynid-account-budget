@@ -137,6 +137,13 @@
                             </group>
                         </group>
                     </page>
+                    <page name="account" string="Accounts">
+                        <field name="detail_account_ids">
+                            <tree>
+                                <field name="account_id"/>
+                            </tree>
+                        </field>
+                    </page>
                     <page name="move_line" string="Realization">
                         <group name="move_line_1" colspan="4" col="2" string="Items">
                             <field name="move_line_ids" nolabel="1">

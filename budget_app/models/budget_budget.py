@@ -137,6 +137,12 @@ class BudgetBudget(models.Model):
             ],
         },
     )
+    detail_account_ids = fields.One2many(
+        string="Detail Accounts",
+        comodel_name="budget.account",
+        inverse_name="budget_id",
+        readonly=True,
+    )
     detail_summary_ids = fields.One2many(
         string="Detail Summary",
         comodel_name="budget.detail_summary",
