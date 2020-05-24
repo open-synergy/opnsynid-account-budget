@@ -54,6 +54,7 @@
                     <page name="workflow" string="Workflow Policy">
                         <group name="workflow_1" colspan="4" col="2">
                             <field name="budget_confirm_grp_ids" widget="many2many_tags"/>
+                            <field name="budget_restart_approval_grp_ids" widget="many2many_tags"/>
                             <field name="budget_approve_grp_ids" widget="many2many_tags"/>
                             <field name="budget_cancel_grp_ids" widget="many2many_tags"/>
                             <field name="budget_restart_grp_ids" widget="many2many_tags"/>

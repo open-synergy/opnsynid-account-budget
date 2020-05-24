@@ -15,7 +15,10 @@ class BudgetBudget(models.Model):
         "base.sequence_document",
         "base.workflow_policy_object",
         "base.cancel.reason_common",
+        "tier.validation",
     ]
+    _state_from = ["draft", "confirm"]
+    _state_to = ["valid"]
 
     @api.model
     def _default_company_id(self):
@@ -206,6 +209,10 @@ class BudgetBudget(models.Model):
         string="Can Approve",
         compute="_compute_policy",
     )
+    restart_approval_ok = fields.Boolean(
+        string="Can Restart Approval",
+        compute="_compute_policy",
+    )
     cancel_ok = fields.Boolean(
         string="Can Cancel",
         compute="_compute_policy",
@@ -247,6 +254,7 @@ class BudgetBudget(models.Model):
     def action_confirm(self):
         for document in self:
             document.write(document._prepare_confirm_data())
+            document.request_validation()
 
     @api.multi
     def action_approve(self):
@@ -257,6 +265,7 @@ class BudgetBudget(models.Model):
     def action_cancel(self):
         for document in self:
             document.write(document._prepare_cancel_data())
+            document.restart_validation()
 
     @api.multi
     def action_restart(self):
@@ -322,3 +331,18 @@ class BudgetBudget(models.Model):
             "name": sequence,
         })
         return result
+
+    @api.multi
+    def validate_tier(self):
+        _super = super(BudgetBudget, self)
+        _super.validate_tier()
+        for document in self:
+            if document.validated:
+                document.action_approve()
+
+    @api.multi
+    def restart_validation(self):
+        _super = super(BudgetBudget, self)
+        _super.restart_validation()
+        for document in self:
+            document.request_validation()
