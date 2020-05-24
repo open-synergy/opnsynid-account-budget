@@ -4,7 +4,7 @@
 # pylint: disable=locally-disabled, manifest-required-author
 {
     "name": "Budget Management",
-    "version": "8.0.1.2.0",
+    "version": "8.0.2.0.0",
     "category": "Invoicing",
     "website": "https://opensynergy-indonesia.com",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
@@ -17,6 +17,7 @@
         "base_cancel_reason",
         "base_print_policy",
         "account_accountant",
+        "base_multiple_approval",
     ],
     "data": [
         "security/ir.model.access.csv",

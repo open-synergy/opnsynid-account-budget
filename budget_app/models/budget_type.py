@@ -54,6 +54,20 @@ class BudgetType(models.Model):
         column1="type_id",
         column2="group_id",
     )
+    budget_restart_approval_grp_ids = fields.Many2many(
+        string="Allow To Restart Budget Approval",
+        comodel_name="res.groups",
+        relation="rel_budget_type_restart_approve_budget",
+        column1="type_id",
+        column2="group_id",
+    )
+    budget_approve_grp_ids = fields.Many2many(
+        string="Allow To Approve Budget",
+        comodel_name="res.groups",
+        relation="rel_budget_type_approve_budget",
+        column1="type_id",
+        column2="group_id",
+    )
     budget_cancel_grp_ids = fields.Many2many(
         string="Allow To Cancel Budget",
         comodel_name="res.groups",

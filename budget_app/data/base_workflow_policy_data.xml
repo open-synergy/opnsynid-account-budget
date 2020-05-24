@@ -11,22 +11,27 @@
 <record id="base_workflow_line_budget_budget_confirm" model="base.workflow_policy_line">
     <field name="workflow_id" ref="budget_app.base_workflow_budget_budget"/>
     <field name="field_id" search="[('model_id.model','=','budget.budget'),('name','=','confirm_ok')]"/>
-    <field name="python_code">result = document.template_id.budget_confirm_grp_ids.ids</field>
+    <field name="python_code">result = document.type_id.budget_confirm_grp_ids.ids</field>
+</record>
+<record id="base_workflow_line_budget_budget_restart_approval" model="base.workflow_policy_line">
+    <field name="workflow_id" ref="budget_app.base_workflow_budget_budget"/>
+    <field name="field_id" search="[('model_id.model','=','budget.budget'),('name','=','restart_approval_ok')]"/>
+    <field name="python_code">result = document.type_id.budget_restart_approval_grp_ids.ids</field>
 </record>
 <record id="base_workflow_line_budget_budget_approve" model="base.workflow_policy_line">
     <field name="workflow_id" ref="budget_app.base_workflow_budget_budget"/>
     <field name="field_id" search="[('model_id.model','=','budget.budget'),('name','=','approve_ok')]"/>
-    <field name="python_code">result = document.template_id.budget_approve_grp_ids.ids</field>
+    <field name="python_code">result = document.type_id.budget_approve_grp_ids.ids</field>
 </record>
 <record id="base_workflow_line_budget_budget_cancel" model="base.workflow_policy_line">
     <field name="workflow_id" ref="budget_app.base_workflow_budget_budget"/>
     <field name="field_id" search="[('model_id.model','=','budget.budget'),('name','=','cancel_ok')]"/>
-    <field name="python_code">result = document.template_id.budget_cancel_grp_ids.ids</field>
+    <field name="python_code">result = document.type_id.budget_cancel_grp_ids.ids</field>
 </record>
 <record id="base_workflow_line_budget_budget_restart" model="base.workflow_policy_line">
     <field name="workflow_id" ref="budget_app.base_workflow_budget_budget"/>
     <field name="field_id" search="[('model_id.model','=','budget.budget'),('name','=','restart_ok')]"/>
-    <field name="python_code">result = document.template_id.budget_restart_grp_ids.ids</field>
+    <field name="python_code">result = document.type_id.budget_restart_grp_ids.ids</field>
 </record>
 </data>
 </openerp>
