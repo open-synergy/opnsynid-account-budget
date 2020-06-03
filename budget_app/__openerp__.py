@@ -29,5 +29,6 @@
         "views/budget_type_views.xml",
         "views/budget_version_views.xml",
         "views/budget_budget_views.xml",
+        "reports/budget_analysis.xml",
     ],
 }
