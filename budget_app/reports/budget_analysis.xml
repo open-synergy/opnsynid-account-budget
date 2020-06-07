@@ -17,14 +17,6 @@
                     <field name="period_id"/>
                     <field name="state"/>
                     <filter name="dom_empty" string="Empty" domain="[('id','=',0)]"/>
-                    <!-- <group name="filter_type" string="Budget Type">
-                        <filter name="filter_revenue" string="Revenue" domain="[('type_id.id','=',1)]"/>
-                        <filter name="filter_cogs_hr" string="COGS HR" domain="[('type_id.id','=',2)]"/>
-                        <filter name="filter_cogs_purchase" string="COGS Purchase" domain="[('type_id.id','=',3)]"/>
-                        <filter name="filter_overhead" string="Overhead" domain="[('type_id.id','=',4)]"/>
-                        <filter name="filter_support" string="Support" domain="[('type_id.id','=',5)]"/>
-                        <filter name="filter_marketing" string="Marketing" domain="[('type_id.id','=',6)]"/>
-                    </group> -->
                     <group name="filter_state" string="State">
                         <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
                         <filter name="filter_confirm" string="Waiting for Approval" domain="[('state','=','confirm')]"/>
