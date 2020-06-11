@@ -25,6 +25,15 @@ class BudgetType(models.Model):
     note = fields.Text(
         string="Note",
     )
+    mode = fields.Selection(
+        string="Mode",
+        selection=[
+            ("revenue", "Revenue"),
+            ("expense", "Expense"),
+        ],
+        required=True,
+        default="expense",
+    )
     sequence_id = fields.Many2one(
         string="Sequence",
         comodel_name="ir.sequence",

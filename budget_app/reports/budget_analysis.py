@@ -64,8 +64,14 @@ class BudgetAnalysis(models.Model):
         SELECT
             a.id AS id,
             a.account_id AS account_id,
-            a.amount_planned AS amount_plan,
-            a.amount_realized AS amount_realized,
+            CASE
+                WHEN c.mode = 'revenue' THEN a.amount_planned
+                ELSE -1.0 * a.amount_planned
+            END as amount_plan,
+            CASE
+                WHEN c.mode = 'revenue' THEN a.amount_realized
+                ELSE -1.0 * a.amount_realized
+            END as amount_realized,
             a.amount_diff AS amount_diff,
             b.id AS budget_id,
             b.company_id AS company_id,
@@ -92,6 +98,7 @@ class BudgetAnalysis(models.Model):
     def _join(self):
         join_str = """
         JOIN budget_budget AS b ON a.budget_id = b.id
+        JOIN budget_type AS c ON b.type_id = c.id
         """
         return join_str
 
