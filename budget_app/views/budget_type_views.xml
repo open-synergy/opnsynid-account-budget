@@ -12,6 +12,7 @@
         <search>
             <field name="name"/>
             <field name="code"/>
+            <field name="mode"/>
         </search>
     </field>
 </record>
@@ -23,6 +24,7 @@
         <tree>
             <field name="name"/>
             <field name="code"/>
+            <field name="mode"/>
         </tree>
     </field>
 </record>
@@ -43,6 +45,7 @@
                 <notebook>
                     <page name="general" string="General Settings">
                         <group name="general_1" colspan="4" col="2">
+                            <field name="mode"/>
                             <field name="sequence_id"/>
                         </group>
                     </page>

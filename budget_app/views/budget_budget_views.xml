@@ -6,7 +6,7 @@
 <openerp>
 <data>
 <record id="budget_budget_view_search" model="ir.ui.view">
-    <field name="name">budget.budget form</field>
+    <field name="name">budget.budget search</field>
     <field name="model">budget.budget</field>
     <field name="arch" type="xml">
         <search>
@@ -16,6 +16,9 @@
             <field name="period_id"/>
             <field name="user_id"/>
             <field name="state"/>
+            <filter name="needs_review" string="Needs my Review"
+                    domain="[('reviewer_ids','in',uid), ('state', 'not in', ['done', 'cancel'])]"
+                    help="Need my review"/>
             <group name="dom_state" string="State">
                 <filter name="dom_draft" string="Draft" domain="[('state','=','draft')]"/>
                 <filter name="dom_confirm" string="Waiting for Approval" domain="[('state','=','confirm')]"/>
@@ -77,7 +80,7 @@
                  ('validated', '=', True), ('state', 'not in', ['confirm']),
                  ('rejected', '=', True), ('review_ids', '=', [])]}"
                  style="margin-bottom:0px;">
-                <p><i class="fa fa-info-circle"/>This Expense needs to be
+                <p><i class="fa fa-info-circle"/>This budget needs to be
                     validated.
                     <button name="validate_tier"
                         string="Validate"
@@ -220,11 +223,12 @@
                     <page string="Reviews" name="tier_validation">
                         <group name="tier_validation_1" colspan="4" col="2">
                             <field name="definition_id"/>
+                            <field name="reviewer_partner_ids" widget="many2many_tags"/>
                         </group>
                         <group name="tier_validation_2" colspan="4" col="2">
                             <field name="review_ids" readonly="1"/>
                         </group>
-                    </page>                    
+                    </page>
                     <page name="note" string="Notes">
                         <field name="note"/>
                     </page>
