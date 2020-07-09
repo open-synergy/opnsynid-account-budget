@@ -65,6 +65,16 @@ class BudgetAnalysis(models.Model):
     previous_date_stop = fields.Date(
         string="Previous Date Stop",
     )
+    next_period_id = fields.Many2one(
+        string="Next Period",
+        comodel_name="account.period",
+    )
+    next_date_start = fields.Date(
+        string="Next Date Start",
+    )
+    next_date_stop = fields.Date(
+        string="Next Date Stop",
+    )
     state = fields.Selection(
         string="State",
         selection=[
@@ -100,6 +110,9 @@ class BudgetAnalysis(models.Model):
             f.date_start AS previous_date_start,
             f.date_stop AS previous_date_stop,
             f.id AS previous_period_id,
+            h.date_start AS next_date_start,
+            h.date_stop AS next_date_stop,
+            h.id AS next_period_id,
             b.state AS state
         """
         return select_str
@@ -143,6 +156,28 @@ class BudgetAnalysis(models.Model):
                 FROM account_period AS f1
                 WHERE f1.special IS FALSE
         ) AS f ON f.sequence = (e.sequence + 1)
+        JOIN (
+            SELECT
+                ROW_NUMBER() OVER (
+                    ORDER BY date_start DESC, date_stop DESC
+                ) AS sequence,
+                g1.id,
+                g1.date_start,
+                g1.date_stop
+                FROM account_period AS g1
+                WHERE g1.special IS FALSE
+        ) AS g ON d.id = g.id
+        LEFT JOIN (
+            SELECT
+                ROW_NUMBER() OVER (
+                    ORDER BY date_start DESC, date_stop DESC
+                ) AS sequence,
+                h1.id,
+                h1.date_start,
+                h1.date_stop
+                FROM account_period AS h1
+                WHERE h1.special IS FALSE
+        ) AS h ON h.sequence = (g.sequence - 1)
         """
         return join_str
 
