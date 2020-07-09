@@ -1,0 +1,145 @@
+# -*- coding: utf-8 -*-
+# Copyright 2020 PT. Simetri Sinergi Indonesia
+# Copyright 2020 OpenSynergy Indonesia
+# License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+
+from openerp import models, fields
+from openerp import tools
+
+
+class BudgetCashAnalysis(models.Model):
+    _name = "budget.cash_analysis"
+    _description = "Budget Cash Analysis"
+    _auto = False
+
+    account_id = fields.Many2one(
+        string="Account",
+        comodel_name="account.account",
+    )
+    direct_cash_flow_code_id = fields.Many2one(
+        string="Direct Cash Flow Code",
+        comodel_name="account.cash_flow_code",
+    )
+    indirect_cash_flow_code_id = fields.Many2one(
+        string="Indirect Cash Flow Code",
+        comodel_name="account.cash_flow_code",
+    )
+    amount_plan = fields.Float(
+        string="Planned Amount",
+    )
+    amount_realized = fields.Float(
+        string="Realized Amount",
+    )
+    amount_diff = fields.Float(
+        string="Diff. Amount",
+    )
+    budget_id = fields.Many2one(
+        string="Budget",
+        comodel_name="budget.budget",
+    )
+    company_id = fields.Many2one(
+        string="Company",
+        comodel_name="res.company",
+    )
+    user_id = fields.Many2one(
+        string="User",
+        comodel_name="res.users",
+    )
+    type_id = fields.Many2one(
+        string="Type",
+        comodel_name="budget.type",
+    )
+    version_id = fields.Many2one(
+        string="Version",
+        comodel_name="budget.version",
+    )
+    period_id = fields.Many2one(
+        string="Period",
+        comodel_name="account.period",
+    )
+    date_start = fields.Date(
+        string="Date Start",
+    )
+    date_stop = fields.Date(
+        string="Date Stop",
+    )
+    state = fields.Selection(
+        string="State",
+        selection=[
+            ("draft", "Draft"),
+            ("confirm", "Waiting for Approval"),
+            ("valid", "Valid"),
+            ("cancel", "Cancel"),
+        ],
+    )
+
+    def _select(self):
+        select_str = """
+        SELECT
+            a.id AS id,
+            b.account_id AS account_id,
+            a.direct_cash_flow_code_id AS direct_cash_flow_code_id,
+            a.indirect_cash_flow_code_id AS indirect_cash_flow_code_id,
+            CASE
+                WHEN d.mode = 'revenue' THEN a.amount
+                ELSE -1.0 * a.amount
+            END as amount_plan,
+            0.0 AS amount_realized,
+            0.0 AS amount_diff,
+            c.id AS budget_id,
+            c.company_id AS company_id,
+            c.user_id AS user_id,
+            c.type_id AS type_id,
+            c.version_id AS version_id,
+            a.period_id AS period_id,
+            e.date_start AS date_start,
+            e.date_stop AS date_stop,
+            c.state AS state
+        """
+        return select_str
+
+    def _from(self):
+        from_str = """
+        budget_detail_cash AS a
+        """
+        return from_str
+
+    def _where(self):
+        where_str = """
+        WHERE 1 = 1
+        """
+        return where_str
+
+    def _join(self):
+        join_str = """
+        JOIN budget_detail AS b ON a.detail_id = b.id
+        JOIN budget_budget AS c ON b.budget_id = c.id
+        JOIN budget_type AS d ON c.type_id = d.id
+        JOIN account_period AS e ON a.period_id = e.id
+        JOIN account_cash_flow_code AS f ON a.direct_cash_flow_code_id = f.id
+        JOIN account_cash_flow_code AS g ON a.indirect_cash_flow_code_id = g.id
+        """
+        return join_str
+
+    def _group_by(self):
+        group_str = """
+        """
+        return group_str
+
+    def init(self, cr):
+        tools.drop_view_if_exists(cr, self._table)
+        # pylint: disable=locally-disabled, sql-injection
+        cr.execute("""CREATE or REPLACE VIEW %s as (
+            %s
+            FROM %s
+            %s
+            %s
+            %s
+        )""" % (
+            self._table,
+            self._select(),
+            self._from(),
+            self._join(),
+            self._where(),
+            self._group_by()
+        ))
