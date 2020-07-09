@@ -4,7 +4,7 @@
 # pylint: disable=locally-disabled, manifest-required-author
 {
     "name": "Budget Management - Cash",
-    "version": "8.0.1.0.0",
+    "version": "8.0.1.1.0",
     "website": "https://opensynergy-indonesia.com",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
     "license": "AGPL-3",

@@ -63,6 +63,16 @@ class BudgetCashAnalysis(models.Model):
     date_stop = fields.Date(
         string="Date Stop",
     )
+    previous_period_id = fields.Many2one(
+        string="Previous Period",
+        comodel_name="account.period",
+    )
+    previous_date_start = fields.Date(
+        string="Previous Date Start",
+    )
+    previous_date_stop = fields.Date(
+        string="Previous Date Stop",
+    )
     state = fields.Selection(
         string="State",
         selection=[
@@ -94,6 +104,9 @@ class BudgetCashAnalysis(models.Model):
             a.period_id AS period_id,
             e.date_start AS date_start,
             e.date_stop AS date_stop,
+            i.date_start AS previous_date_start,
+            i.date_stop AS previous_date_stop,
+            i.id AS previous_period_id,
             c.state AS state
         """
         return select_str
@@ -118,6 +131,28 @@ class BudgetCashAnalysis(models.Model):
         JOIN account_period AS e ON a.period_id = e.id
         JOIN account_cash_flow_code AS f ON a.direct_cash_flow_code_id = f.id
         JOIN account_cash_flow_code AS g ON a.indirect_cash_flow_code_id = g.id
+        JOIN (
+            SELECT
+                ROW_NUMBER() OVER (
+                    ORDER BY date_start DESC, date_stop DESC
+                ) AS sequence,
+                h1.id,
+                h1.date_start,
+                h1.date_stop
+                FROM account_period AS h1
+                WHERE h1.special IS FALSE
+        ) AS h ON e.id = h.id
+        LEFT JOIN (
+            SELECT
+                ROW_NUMBER() OVER (
+                    ORDER BY date_start DESC, date_stop DESC
+                ) AS sequence,
+                i1.id,
+                i1.date_start,
+                i1.date_stop
+                FROM account_period AS i1
+                WHERE i1.special IS FALSE
+        ) AS i ON i.sequence = (h.sequence + 1)
         """
         return join_str
 
