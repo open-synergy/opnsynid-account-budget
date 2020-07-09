@@ -49,6 +49,12 @@ class BudgetAnalysis(models.Model):
         string="Period",
         comodel_name="account.period",
     )
+    date_start = fields.Date(
+        string="Date Start",
+    )
+    date_stop = fields.Date(
+        string="Date Stop",
+    )
     state = fields.Selection(
         string="State",
         selection=[
@@ -79,6 +85,8 @@ class BudgetAnalysis(models.Model):
             b.type_id AS type_id,
             b.version_id AS version_id,
             b.period_id AS period_id,
+            d.date_start AS date_start,
+            d.date_stop AS date_stop,
             b.state AS state
         """
         return select_str
@@ -99,6 +107,7 @@ class BudgetAnalysis(models.Model):
         join_str = """
         JOIN budget_budget AS b ON a.budget_id = b.id
         JOIN budget_type AS c ON b.type_id = c.id
+        JOIN account_period AS d ON b.period_id = d.id
         """
         return join_str
 
