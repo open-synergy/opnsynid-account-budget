@@ -160,6 +160,7 @@
                                             <field name="amount_subtotal"/>
                                         </group>
                                     </group>
+                                    <notebook/>
                                 </form>
                             </field>
                         </group>
