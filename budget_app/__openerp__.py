@@ -4,7 +4,7 @@
 # pylint: disable=locally-disabled, manifest-required-author
 {
     "name": "Budget Management",
-    "version": "8.0.2.3.0",
+    "version": "8.0.2.4.0",
     "category": "Invoicing",
     "website": "https://opensynergy-indonesia.com",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
@@ -30,5 +30,8 @@
         "views/budget_version_views.xml",
         "views/budget_budget_views.xml",
         "reports/budget_analysis.xml",
+    ],
+    "images": [
+        "static/description/banner.png",
     ],
 }
