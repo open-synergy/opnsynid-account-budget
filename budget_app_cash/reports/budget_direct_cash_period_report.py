@@ -73,7 +73,7 @@ class BudgetDirectCashPeriodReport(models.Model):
         select_str = """
         SELECT
             a.id AS id,
-            a.cash_flow_code_id AS account_id,
+            a.cash_flow_code_id AS cash_flow_code_id,
             a.version_id AS version_id,
             a.period_id AS period_id,
             b.date_start AS date_start,
