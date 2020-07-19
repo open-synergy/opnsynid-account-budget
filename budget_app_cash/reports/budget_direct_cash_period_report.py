@@ -16,6 +16,40 @@ class BudgetDirectCashPeriodReport(models.Model):
         string="Cash Flow Code",
         comodel_name="account.cash_flow_code",
     )
+    version_id = fields.Many2one(
+        string="Version",
+        comodel_name="budget.version",
+    )
+    period_id = fields.Many2one(
+        string="Period",
+        comodel_name="account.period",
+    )
+    date_start = fields.Date(
+        string="Date Start",
+    )
+    date_stop = fields.Date(
+        string="Date Stop",
+    )
+    previous_period_id = fields.Many2one(
+        string="Previous Period",
+        comodel_name="account.period",
+    )
+    previous_date_start = fields.Date(
+        string="Previous Date Start",
+    )
+    previous_date_stop = fields.Date(
+        string="Previous Date Stop",
+    )
+    next_period_id = fields.Many2one(
+        string="Next Period",
+        comodel_name="account.period",
+    )
+    next_date_start = fields.Date(
+        string="Next Date Start",
+    )
+    next_date_stop = fields.Date(
+        string="Next Date Stop",
+    )
     amount_plan = fields.Float(
         string="Planned Amount",
     )
@@ -34,62 +68,55 @@ class BudgetDirectCashPeriodReport(models.Model):
     running_amount_diff = fields.Float(
         string="Diff. Amount",
     )
-    company_id = fields.Many2one(
-        string="Company",
-        comodel_name="res.company",
-    )
-    version_id = fields.Many2one(
-        string="Version",
-        comodel_name="budget.version",
-    )
-    period_id = fields.Many2one(
-        string="Period",
-        comodel_name="account.period",
-    )
-    date_start = fields.Date(
-        string="Date Start",
-    )
-    date_stop = fields.Date(
-        string="Date Stop",
-    )
 
     def _select(self):
         select_str = """
         SELECT
-            ROW_NUMBER() OVER() AS id,
-            a.cash_flow_code_id AS cash_flow_code_id,
-            a.company_id AS company_id,
+            a.id AS id,
+            a.cash_flow_code_id AS account_id,
             a.version_id AS version_id,
             a.period_id AS period_id,
             b.date_start AS date_start,
             b.date_stop AS date_stop,
-            a.amount_plan AS amount_plan,
-            a.amount_realized AS amount_realized,
-            a.amount_diff AS amount_diff,
-            SUM(a.amount_plan) OVER (
-                PARTITION BY    a.cash_flow_code_id,
-                                a.company_id,
-                                a.version_id,
-                                b.fiscalyear_id
-                ORDER BY b.date_stop) AS running_amount_plan,
-            SUM(a.amount_realized) OVER (
-                PARTITION BY    a.cash_flow_code_id,
-                                a.company_id,
-                                a.version_id,
-                                b.fiscalyear_id
-                ORDER BY b.date_stop) AS running_amount_realized,
-            SUM(a.amount_diff) OVER (
-                PARTITION BY    a.cash_flow_code_id,
-                                a.company_id,
-                                a.version_id,
-                                b.fiscalyear_id
-                ORDER BY b.date_stop) AS running_amount_diff
+            a.previous_period_id AS previous_period_id,
+            a.previous_date_start AS previous_date_start,
+            a.previous_date_start AS previous_date_stop,
+            a.next_period_id AS next_period_id,
+            a.next_date_start AS next_date_start,
+            a.next_date_stop AS next_date_stop,
+            COALESCE(c.amount_plan, 0.0) AS amount_plan,
+            COALESCE(c.amount_realized, 0.0) AS amount_realized,
+            COALESCE(c.amount_diff, 0.0) AS amount_diff,
+            COALESCE(
+                SUM(c.amount_plan) OVER (
+                    PARTITION BY    a.cash_flow_code_id,
+                                    a.version_id,
+                                    b.fiscalyear_id
+                    ORDER BY a.date_stop),
+                0.0
+            ) AS running_amount_plan,
+            COALESCE(
+                SUM(c.amount_realized) OVER (
+                    PARTITION BY    a.cash_flow_code_id,
+                                    a.version_id,
+                                    b.fiscalyear_id
+                    ORDER BY a.date_stop),
+                0.0
+            ) AS running_amount_realized,
+            COALESCE(
+                SUM(c.amount_diff) OVER (
+                    PARTITION BY    a.cash_flow_code_id,
+                                    a.version_id,
+                                    b.fiscalyear_id
+                    ORDER BY a.date_stop),
+                0.0
+            ) AS running_amount_diff
         """
         return select_str
 
     def _from(self):
         from_str = """
-        budget_direct_cash_period_helper AS a
+        budget_direct_cash_period_helper_header AS a
         """
         return from_str
 
@@ -101,6 +128,11 @@ class BudgetDirectCashPeriodReport(models.Model):
     def _join(self):
         join_str = """
         JOIN account_period AS b ON a.period_id = b.id
+        LEFT JOIN budget_direct_cash_period_helper AS c ON
+            a.cash_flow_code_id = c.cash_flow_code_id AND
+            a.version_id = c.version_id AND
+            a.period_id = c.period_id
+
         """
         return join_str
 
