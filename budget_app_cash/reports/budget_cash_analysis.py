@@ -101,8 +101,10 @@ class BudgetCashAnalysis(models.Model):
             a.direct_cash_flow_code_id AS direct_cash_flow_code_id,
             a.indirect_cash_flow_code_id AS indirect_cash_flow_code_id,
             CASE
-                WHEN d.mode = 'revenue' THEN a.amount
-                ELSE -1.0 * a.amount
+                WHEN d.mode = 'revenue' THEN
+                    CAST(a.amount AS DOUBLE PRECISION)
+                ELSE
+                    CAST((0.0 - a.amount) AS DOUBLE PRECISION)
             END as amount_plan,
             0.0 AS amount_realized,
             0.0 AS amount_diff,
