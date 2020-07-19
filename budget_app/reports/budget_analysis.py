@@ -91,14 +91,18 @@ class BudgetAnalysis(models.Model):
             a.id AS id,
             a.account_id AS account_id,
             CASE
-                WHEN c.mode = 'revenue' THEN a.amount_planned
-                ELSE -1.0 * a.amount_planned
+                WHEN c.mode = 'revenue' THEN
+                    CAST(a.amount_planned AS DOUBLE PRECISION)
+                ELSE
+                    CAST((0.0 - a.amount_planned) AS DOUBLE PRECISION)
             END as amount_plan,
             CASE
-                WHEN c.mode = 'revenue' THEN a.amount_realized
-                ELSE -1.0 * a.amount_realized
+                WHEN c.mode = 'revenue' THEN
+                    CAST(a.amount_realized AS DOUBLE PRECISION)
+                ELSE
+                    CAST((0.0 - a.amount_realized) AS DOUBLE PRECISION)
             END as amount_realized,
-            a.amount_diff AS amount_diff,
+            CAST(a.amount_diff AS DOUBLE PRECISION) AS amount_diff,
             b.id AS budget_id,
             b.company_id AS company_id,
             b.user_id AS user_id,

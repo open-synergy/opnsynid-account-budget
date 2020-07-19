@@ -14,4 +14,5 @@ budget_detail_summary_all,budget.summary - all,model_budget_detail_summary,,1,0,
 budget_account_all,budget.account - all,model_budget_account,,1,0,0,0
 budget_analysis_all,budget.analysis - all,model_budget_analysis,,1,0,0,0
 budget_period_helper_all,budget.period_helper - all,model_budget_period_helper,,1,0,0,0
+budget_period_helper_header_all,budget.period_helper_header - all,model_budget_period_helper_header,,1,0,0,0
 budget_period_report_all,budget.period_report - all,model_budget_period_report,,1,0,0,0
