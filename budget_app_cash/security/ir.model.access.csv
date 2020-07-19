@@ -2,3 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 budget_cash_analysis_all,budget.cash_analysis - all,model_budget_cash_analysis,,1,0,0,0
 budget_detail_cash_employee,budget.detail_cash - user,model_budget_detail_cash,base.group_user,1,1,1,1
 budget_detail_cash_all,budget.detail_cash - all,model_budget_detail_cash,,1,0,0,0
+budget_direct_cash_period_helper_all,budget.direct_cash_period_helper - all,model_budget_direct_cash_period_helper,,1,0,0,0
+budget_direct_cash_period_report_all,budget.direct_cash_period_report - all,model_budget_direct_cash_period_report,,1,0,0,0
