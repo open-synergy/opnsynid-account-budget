@@ -4,12 +4,12 @@
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
 <openerp>
     <data>
-        <record id="budget_version_demo1" model="budget.type">
+        <record id="budget_version_demo1" model="budget.version">
             <field name="name">Pesimistic</field>
             <field name="code">T001</field>
         </record>
 
-        <record id="budget_version_demo2" model="budget.type">
+        <record id="budget_version_demo2" model="budget.version">
             <field name="name">Optimistic</field>
             <field name="code">T002</field>
         </record>
