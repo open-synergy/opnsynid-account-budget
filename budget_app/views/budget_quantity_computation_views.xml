@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2020 OpenSynergy Indonesia
+     Copyright 2020 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="budget_quantity_computation_view_search" model="ir.ui.view">
+    <field name="name">budget.quantity_computation search</field>
+    <field name="model">budget.quantity_computation</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name" />
+            <field name="code" />
+        </search>
+    </field>
+</record>
+
+<record id="budget_quantity_computation_view_tree" model="ir.ui.view">
+    <field name="name">budget.quantity_computation tree</field>
+    <field name="model">budget.quantity_computation</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name" />
+            <field name="code" />
+        </tree>
+    </field>
+</record>
+
+<record id="budget_quantity_computation_view_form" model="ir.ui.view">
+    <field name="name">budget.quantity_computation form</field>
+    <field name="model">budget.quantity_computation</field>
+    <field name="arch" type="xml">
+        <form>
+            <header />
+            <sheet>
+                <div
+                            class="oe_right oe_button_box"
+                            style="width: 300px;"
+                            name="buttons"
+                        />
+                <group name="group_1" colspan="4" col="2">
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="active" />
+                </group>
+                <notebook>
+                    <page name="python_code" string="Python Code">
+                        <field name="python_code" />
+                    </page>
+                    <page name="note" string="Note">
+                        <field name="note" />
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="budget_quantity_computation_action" model="ir.actions.act_window">
+    <field name="name">Quantity Computations</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">budget.quantity_computation</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+            id="budget_quantity_computation_menu"
+            name="Quantity Computations"
+            parent="budget_configuration_menu"
+            action="budget_quantity_computation_action"
+            sequence="3"
+        />
+
+</data>
+</openerp>

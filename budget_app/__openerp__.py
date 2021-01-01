@@ -3,7 +3,7 @@
 # pylint: disable=locally-disabled, manifest-required-author
 {
     "name": "Budget Management",
-    "version": "8.0.2.9.0",
+    "version": "8.0.2.10.0",
     "category": "Invoicing",
     "website": "https://simetri-sinergi.id",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
@@ -27,6 +27,7 @@
         "menu.xml",
         "views/budget_type_views.xml",
         "views/budget_version_views.xml",
+        "views/budget_quantity_computation_views.xml",
         "views/budget_budget_views.xml",
         "reports/budget_analysis.xml",
     ],
