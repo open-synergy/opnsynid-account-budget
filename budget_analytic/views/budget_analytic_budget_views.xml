@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2020 OpenSynergy Indonesia
+     Copyright 2020 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="budget_analytic_budget_view_search" model="ir.ui.view">
+    <field name="name">budget_analytic.budget search</field>
+    <field name="model">budget_analytic.budget</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name" />
+            <field name="company_id" groups="base.group_multi_company" />
+            <field name="analytic_account_id" />
+            <field name="type_id" />
+            <field name="user_id" />
+            <field name="state" />
+            <filter
+                        name="needs_review"
+                        string="Needs my Review"
+                        domain="[('reviewer_ids','in',uid), ('state', 'not in', ['done', 'cancel'])]"
+                        help="Need my review"
+                    />
+            <group name="dom_state" string="State">
+                <filter
+                            name="dom_draft"
+                            string="Draft"
+                            domain="[('state','=','draft')]"
+                        />
+                <filter
+                            name="dom_confirm"
+                            string="Waiting for Approval"
+                            domain="[('state','=','confirm')]"
+                        />
+                <filter
+                            name="dom_valid"
+                            string="Approved"
+                            domain="[('state','=','valid')]"
+                        />
+                <filter
+                            name="dom_cancel"
+                            string="Cancel"
+                            domain="[('state','=','cancel')]"
+                        />
+            </group>
+            <group name="groupby" string="Group By..">
+                <filter
+                            name="grp_company"
+                            string="Company"
+                            context="{'group_by':'company_id'}"
+                            groups="base.group_multi_company"
+                        />
+                <filter
+                            name="grp_type"
+                            string="Type"
+                            context="{'group_by':'type_id'}"
+                        />
+                <filter
+                            name="grp_analytic_account"
+                            string="Analytic Account"
+                            context="{'group_by':'analytic_account_id'}"
+                        />
+                <filter
+                            name="grp_responsible"
+                            string="Responsible"
+                            context="{'group_by':'user_id'}"
+                        />
+            </group>
+        </search>
+    </field>
+</record>
+
+<record id="budget_analytic_budget_view_tree" model="ir.ui.view">
+    <field name="name">budget_analytic.budget tree</field>
+    <field name="model">budget_analytic.budget</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name" />
+            <field name="company_id" groups="base.group_multi_company" />
+            <field name="analytic_account_id" />
+            <field name="type_id" />
+            <field name="user_id" />
+            <field name="amount_planned_pl" />
+            <field name="amount_profit_realization" />
+            <field name="state" />
+        </tree>
+    </field>
+</record>
+
+<record id="budget_analytic_budget_view_form" model="ir.ui.view">
+    <field name="name">budget_analytic.budget form</field>
+    <field name="model">budget_analytic.budget</field>
+    <field name="arch" type="xml">
+        <form>
+            <header>
+                <button
+                            name="action_confirm"
+                            type="object"
+                            string="Confirm"
+                            class="oe_highlight"
+                            attrs="{'invisible':['|',('state','!=','draft'),('confirm_ok','=',False)]}"
+                            confirm="Confirm budget. Are you sure?"
+                        />
+                <button
+                            name="request_validation"
+                            string="Request Validation"
+                            attrs="{'invisible': ['|','|',('need_validation', '!=', True),('rejected','=',True),('state','not in',['confirm'])]}"
+                            class="oe_highlight"
+                            type="object"
+                        />
+                <button
+                            name="restart_validation"
+                            string="Restart Validation"
+                            attrs="{'invisible': ['|','|','|',('review_ids', '=', []),('rejected','=',False),('state','not in',['confirm']),('restart_approval_ok','=',False)]}"
+                            type="object"
+                        />
+                <button
+                            name="%(base_print_policy.base_print_document_action)d"
+                            string="Print"
+                            type="action"
+                            icon="gtk-print"
+                        />
+                <button
+                            name="%(base_cancel_reason.base_cancel_reason_wizard_action)d"
+                            type="action"
+                            string="Cancel"
+                            attrs="{'invisible':['|',('state','=','cancel'),('cancel_ok','=',False)]}"
+                            confirm="Cancel budget. Are you sure?"
+                        />
+                <button
+                            name="action_restart"
+                            type="object"
+                            string="Restart"
+                            attrs="{'invisible':['|',('state','!=','cancel'),('restart_ok','=',False)]}"
+                            confirm="Restart budget. Are you sure?"
+                        />
+                <field
+                            name="state"
+                            widget="statusbar"
+                            statusbar_visible="draft,confirm,approve,open"
+                        />
+            </header>
+            <field name="need_validation" invisible="1" />
+            <field name="validated" invisible="1" />
+            <field name="rejected" invisible="1" />
+            <div
+                        class="alert alert-warning"
+                        attrs="{'invisible': ['|', '|', '|',
+                 ('validated', '=', True), ('state', 'not in', ['confirm']),
+                 ('rejected', '=', True), ('review_ids', '=', [])]}"
+                        style="margin-bottom:0px;"
+                    >
+                <p><i class="fa fa-info-circle" />This budget needs to be
+                    validated.
+                    <button
+                                name="validate_tier"
+                                string="Validate"
+                                attrs="{'invisible': [('review_ids', '=', [])]}"
+                                type="object"
+                                class="oe_inline oe_button btn-success"
+                                icon="terp-check"
+                            />
+                    <button
+                                name="reject_tier"
+                                string="Reject"
+                                type="object"
+                                class="btn-icon btn-danger"
+                                icon="terp-gtk-stop"
+                            />
+                </p>
+            </div>
+            <div
+                        class="alert alert-success"
+                        attrs="{'invisible': ['|', '|', ('validated', '!=', True), ('state', 'not in', ['confirm']), ('review_ids', '=', [])]}"
+                        style="margin-bottom:0px;"
+                    >
+                <p><i class="fa fa-thumbs-up" /> Operation has been <b
+                            >validated</b>!</p>
+            </div>
+            <div
+                        class="alert alert-danger"
+                        attrs="{'invisible': ['|', '|', ('rejected', '!=', True), ('state', 'not in', ['confirm']), ('review_ids', '=', [])]}"
+                        style="margin-bottom:0px;"
+                    >
+                <p><i class="fa fa-thumbs-down" /> Operation has been <b
+                            >rejected</b>.</p>
+            </div>
+            <sheet>
+                <div
+                            class="oe_right oe_button_box"
+                            style="width: 300px;"
+                            name="buttons"
+                        >
+                </div>
+                <div class="oe_left" style="width: 500px;">
+                    <div class="oe_title" style="width: 500px;">
+                        <label for="name" />
+                        <h1>
+                            <field name="name" />
+                        </h1>
+                        <h2 attrs="{'invisible': [('state', '!=', 'cancel')]}">
+                            <label
+                                        for="cancel_reason_id"
+                                        string="Cancellation reason:"
+                                    />
+                            <field name="cancel_reason_id" class="oe_inline" />
+                        </h2>
+                    </div>
+                </div>
+                <group name="group_1" colspan="4" col="2">
+                    <group name="group_1_1" colspan="1" col="2">
+                        <field name="company_id" groups="base.group_multi_company" />
+                        <field name="type_id" />
+                        <field name="user_id" />
+                    </group>
+                    <group name="group_1_2">
+                        <field
+                                    name="analytic_account_id"
+                                    domain="[('type','=','normal'),('state','=','open')]"
+                                />
+                    </group>
+                </group>
+                <notebook colspan="4">
+                    <page name="detail" string="Budget Detail">
+                        <group
+                                    name="revenue_item"
+                                    colspan="4"
+                                    col="2"
+                                    string="Revenues"
+                                >
+                            <field
+                                        name="detail_revenue_ids"
+                                        colspan="2"
+                                        nolabel="1"
+                                        context="{'default_direction':'revenue', 'default_type_id': type_id}"
+                                    >
+                                <tree>
+                                    <field name="name" />
+                                    <field name="direction" invisible="1" />
+                                    <field name="account_id" />
+                                    <field name="product_id" />
+                                    <field name="amount_unit" />
+                                    <field name="quantity" />
+                                    <field name="uom_id" />
+                                    <field name="amount_subtotal" />
+                                </tree>
+                                <form>
+                                    <group name="revenue_item_form" colspan="4" col="2">
+                                        <group
+                                                    name="revenue_item_form_1"
+                                                    colspan="1"
+                                                    col="2"
+                                                >
+                                            <field name="direction" invisible="1" />
+                                            <field name="type_id" invisible="1" />
+                                            <field
+                                                        name="allowed_account_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="account_id"
+                                                        domain="[('id','in',allowed_account_ids[0][2])]"
+                                                    />
+                                            <field
+                                                        name="allowed_product_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="allowed_product_categ_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="product_required"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="product_id"
+                                                        domain="['|',('id','in',allowed_product_ids[0][2]),('categ_id','=',allowed_product_categ_ids[0][2])]"
+                                                        attrs="{'required':[('product_required','=',True)]}"
+                                                    />
+                                            <field name="name" />
+                                        </group>
+                                        <group
+                                                    name="revenue_item_form_2"
+                                                    colspan="1"
+                                                    col="2"
+                                                >
+                                            <field name="pricelist_id" />
+                                            <field name="amount_unit" />
+                                            <field name="quantity" />
+                                            <field
+                                                        name="allowed_uom_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="uom_id"
+                                                        domain="[('id','in',allowed_uom_ids[0][2])]"
+                                                    />
+                                            <field name="amount_subtotal" />
+                                        </group>
+                                    </group>
+                                    <notebook />
+                                </form>
+                            </field>
+                        </group>
+                        <group name="cost_item" colspan="4" col="2" string="Costs">
+                            <field
+                                        name="detail_cost_ids"
+                                        colspan="2"
+                                        nolabel="1"
+                                        context="{'default_direction':'cost', 'default_type_id': type_id}"
+                                    >
+                                <tree>
+                                    <field name="name" />
+                                    <field name="direction" invisible="1" />
+                                    <field name="account_id" />
+                                    <field name="product_id" />
+                                    <field name="amount_unit" />
+                                    <field name="quantity" />
+                                    <field name="uom_id" />
+                                    <field name="amount_subtotal" />
+                                </tree>
+                                <form>
+                                    <group name="cost_item_form" colspan="4" col="2">
+                                        <group
+                                                    name="cost_item_form_1"
+                                                    colspan="1"
+                                                    col="2"
+                                                >
+                                            <field name="direction" invisible="1" />
+                                            <field name="type_id" invisible="1" />
+                                            <field
+                                                        name="allowed_account_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="account_id"
+                                                        domain="[('id','in',allowed_account_ids[0][2])]"
+                                                    />
+                                            <field
+                                                        name="allowed_product_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="allowed_product_categ_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="product_required"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="product_id"
+                                                        domain="['|',('id','in',allowed_product_ids[0][2]),('categ_id','=',allowed_product_categ_ids[0][2])]"
+                                                        attrs="{'required':[('product_required','=',True)]}"
+                                                    />
+                                            <field name="name" />
+                                        </group>
+                                        <group
+                                                    name="cost_item_form_2"
+                                                    colspan="1"
+                                                    col="2"
+                                                >
+                                            <field name="pricelist_id" />
+                                            <field name="amount_unit" />
+                                            <field name="quantity" />
+                                            <field
+                                                        name="allowed_uom_ids"
+                                                        widget="many2many_tags"
+                                                        invisible="1"
+                                                    />
+                                            <field
+                                                        name="uom_id"
+                                                        domain="[('id','in',allowed_uom_ids[0][2])]"
+                                                    />
+                                            <field name="amount_subtotal" />
+                                        </group>
+                                    </group>
+                                    <notebook />
+                                </form>
+                            </field>
+                        </group>
+                        <group name="detail_3" colspan="4" col="2">
+                            <group
+                                        name="detail_3_1"
+                                        colspan="1"
+                                        col="2"
+                                        string="Planned"
+                                    >
+                                <field name="amount_planned_revenue" string="Revenue" />
+                                <field name="amount_planned_cost" string="Cost" />
+                                <field name="amount_planned_pl" string="Profit/Loss" />
+                            </group>
+                            <group
+                                        name="detail_3_2"
+                                        colspan="1"
+                                        col="2"
+                                        string="Realization"
+                                    >
+                                <field
+                                            name="amount_unbudgeted_revenue_realization"
+                                            string="Unbudgeted Revenue"
+                                        />
+                                <field
+                                            name="amount_budgeted_revenue_realization"
+                                            string="Budgeted Revenue"
+                                        />
+                                <field
+                                            name="amount_revenue_realization"
+                                            string="Revenue"
+                                        />
+                                <field
+                                            name="amount_unbudgeted_cost_realization"
+                                            string="Unbudgeted Cost"
+                                        />
+                                <field
+                                            name="amount_budgeted_cost_realization"
+                                            string="Budgeted Cost"
+                                        />
+                                <field name="amount_cost_realization" string="Cost" />
+                                <field
+                                            name="amount_profit_realization"
+                                            string="Profit/Loss"
+                                        />
+                            </group>
+                        </group>
+                    </page>
+                    <page name="realization" string="Realization">
+                        <group name="realization_1" string="Realization">
+                            <field name="realization_ids" nolabel="1">
+                                <tree>
+                                    <field name="account_id" />
+                                    <field name="product_id" />
+                                    <field
+                                                name="amount_realized"
+                                                sum="Total Amount Realized"
+                                            />
+                                </tree>
+                            </field>
+                        </group>
+                        <group name="realization_2" string="Budgeted Realization">
+                            <field name="budgeted_realization_ids" nolabel="1">
+                                <tree>
+                                    <field name="account_id" />
+                                    <field name="product_id" />
+                                    <field
+                                                name="amount_budgeted"
+                                                sum="Total Amount Planned"
+                                            />
+                                    <field
+                                                name="amount_realized"
+                                                sum="Total Amount Realized"
+                                            />
+                                </tree>
+                            </field>
+                        </group>
+                        <group name="realization_3" string="Unbudgeted Realization">
+                            <field name="unbudgeted_realization_ids" nolabel="1">
+                                <tree>
+                                    <field name="account_id" />
+                                    <field name="product_id" />
+                                    <field
+                                                name="amount_realized"
+                                                sum="Total Amount Realized"
+                                            />
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                    <page string="Reviews" name="tier_validation">
+                        <group name="tier_validation_1" colspan="4" col="2">
+                            <field name="definition_id" />
+                            <field
+                                        name="reviewer_partner_ids"
+                                        widget="many2many_tags"
+                                    />
+                        </group>
+                        <group name="tier_validation_2" colspan="4" col="2">
+                            <field name="review_ids" readonly="1" />
+                        </group>
+                    </page>
+                    <page name="note" string="Notes">
+                        <field name="note" />
+                    </page>
+                    <page name="policy" string="Policies" groups="base.group_system">
+                        <group name="policy_1" colspan="4" col="2">
+                            <field name="confirm_ok" />
+                            <field name="restart_approval_ok" />
+                            <field name="cancel_ok" />
+                            <field name="restart_ok" />
+                        </group>
+                    </page>
+                    <page name="log" string="Logs" groups="base.group_system">
+                        <group name="group_5" colspan="4" col="3">
+                            <group name="group_log_1" colspan="4" col="3">
+                                <field name="confirm_date" string="Confirmation" />
+                                <field name="confirm_user_id" nolabel="1" />
+                                <field name="cancel_date" string="Cancellation" />
+                                <field name="cancel_user_id" nolabel="1" />
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+            <div class="oe_chatter">
+                <field
+                            name="message_follower_ids"
+                            widget="mail_followers"
+                            groups="base.group_user"
+                        />
+                <field name="message_ids" widget="mail_thread" />
+            </div>
+        </form>
+    </field>
+</record>
+
+<record id="budget_analytic_budget_action" model="ir.actions.act_window">
+    <field name="name">Analytic Budget</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">budget_analytic.budget</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+            id="budget_analytic_budget_menu"
+            name="Analytic Budgets"
+            parent="budget_app.budget_root_menu"
+            action="budget_analytic_budget_action"
+            sequence="2"
+        />
+
+</data>
+</openerp>
