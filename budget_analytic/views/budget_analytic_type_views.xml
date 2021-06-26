@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2020 OpenSynergy Indonesia
+     Copyright 2020 PT. Simetri Sinergi Indonesia
+     License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
+<openerp>
+<data>
+<record id="budget_analytic_type_view_search" model="ir.ui.view">
+    <field name="name">budget_analytic.type search</field>
+    <field name="model">budget_analytic.type</field>
+    <field name="arch" type="xml">
+        <search>
+            <field name="name" />
+            <field name="code" />
+        </search>
+    </field>
+</record>
+
+<record id="budget_analytic_type_view_tree" model="ir.ui.view">
+    <field name="name">budget_analytic.type tree</field>
+    <field name="model">budget_analytic.type</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name" />
+            <field name="code" />
+        </tree>
+    </field>
+</record>
+
+<record id="budget_analytic_type_view_form" model="ir.ui.view">
+    <field name="name">budget_analytic.type form</field>
+    <field name="model">budget_analytic.type</field>
+    <field name="arch" type="xml">
+        <form>
+            <header />
+            <sheet>
+                <div
+                            class="oe_right oe_button_box"
+                            style="width: 300px;"
+                            name="buttons"
+                        />
+                <group name="group_1" colspan="4" col="2">
+                    <field name="name" />
+                    <field name="code" />
+                    <field name="active" />
+                </group>
+                <notebook>
+                    <page name="general" string="General Settings">
+                        <group name="general_1" colspan="4" col="2">
+                            <field name="sequence_id" />
+                        </group>
+                    </page>
+                    <page name="account" string="Allowed Accounts">
+                        <group
+                                    name="account_1"
+                                    colspan="4"
+                                    col="2"
+                                    string="Can Be Used Without Product"
+                                >
+                            <field
+                                        name="allowed_revenue_account_ids"
+                                        widget="many2many_tags"
+                                        string="Revenue"
+                                    />
+                            <field
+                                        name="allowed_cost_account_ids"
+                                        widget="many2many_tags"
+                                        string="Cost"
+                                    />
+                        </group>
+                        <group
+                                    name="account_2"
+                                    colspan="4"
+                                    col="2"
+                                    string="Can Be Used With Product"
+                                >
+                            <field
+                                        name="revenue_account_ids"
+                                        context="{'default_direction': 'revenue'}"
+                                    >
+                                <tree editable="top">
+                                    <field name="account_id" />
+                                    <field name="direction" invisible="1" />
+                                    <field
+                                                name="allowed_product_ids"
+                                                widget="many2many_tags"
+                                            />
+                                    <field
+                                                name="allowed_product_categ_ids"
+                                                widget="many2many_tags"
+                                            />
+                                </tree>
+                            </field>
+                            <field
+                                        name="cost_account_ids"
+                                        context="{'default_direction': 'cost'}"
+                                    >
+                                <tree editable="top">
+                                    <field name="account_id" />
+                                    <field name="direction" invisible="1" />
+                                    <field
+                                                name="allowed_product_ids"
+                                                widget="many2many_tags"
+                                            />
+                                    <field
+                                                name="allowed_product_categ_ids"
+                                                widget="many2many_tags"
+                                            />
+                                </tree>
+                            </field>
+                        </group>
+                        <group
+                                    name="account_3"
+                                    colspan="4"
+                                    col="2"
+                                    string="All Allowed Account"
+                                >
+                            <field
+                                        name="all_allowed_revenue_account_ids"
+                                        widget="many2many_tags"
+                                    />
+                            <field
+                                        name="all_allowed_cost_account_ids"
+                                        widget="many2many_tags"
+                                    />
+                        </group>
+                    </page>
+                    <page name="workflow" string="Workflow Policy">
+                        <group name="workflow_1" colspan="4" col="2">
+                            <field
+                                        name="budget_analytic_confirm_grp_ids"
+                                        widget="many2many_tags"
+                                    />
+                            <field
+                                        name="budget_analytic_restart_approval_grp_ids"
+                                        widget="many2many_tags"
+                                    />
+                            <field
+                                        name="budget_analytic_cancel_grp_ids"
+                                        widget="many2many_tags"
+                                    />
+                            <field
+                                        name="budget_analytic_restart_grp_ids"
+                                        widget="many2many_tags"
+                                    />
+                        </group>
+                    </page>
+                    <page name="note" string="Note">
+                        <field name="note" />
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<record id="budget_analytic_type_action" model="ir.actions.act_window">
+    <field name="name">Analytic Budget Types</field>
+    <field name="type">ir.actions.act_window</field>
+    <field name="res_model">budget_analytic.type</field>
+    <field name="view_type">form</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+<menuitem
+            id="budget_analytic_type_menu"
+            name="Types"
+            parent="budget_analytic_configuration_menu"
+            action="budget_analytic_type_action"
+            sequence="1"
+        />
+
+</data>
+</openerp>

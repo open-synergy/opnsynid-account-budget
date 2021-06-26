@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+budget_analytic_type_employee,budget_analytic.type - user,model_budget_analytic_type,base.group_user,1,1,1,1
+budget_analytic_type_all,budget_analytic.type - all,model_budget_analytic_type,,1,0,0,0
+budget_analytic_type_account_employee,budget_analytic.type_account - user,model_budget_analytic_type_account,base.group_user,1,1,1,1
+budget_analytic_type_account_all,budget_analytic.type_account - all,model_budget_analytic_type_account,,1,0,0,0
+budget_analytic_budget_employee,budget_analytic.budget - user,model_budget_analytic_budget,base.group_user,1,1,1,1
+budget_analytic_budget_all,budget_analytic.budget - all,model_budget_analytic_budget,,1,0,0,0
+budget_analytic_budget_detail_employee,budget_analytic.budget_detail - user,model_budget_analytic_budget_detail,base.group_user,1,1,1,1
+budget_analytic_budget_detail_all,budget_analytic.budget_detail - all,model_budget_analytic_budget_detail,,1,0,0,0
+budget_analytic_budget_realization_budgeted_all,budget_analytic.budget_realization_budgeted - all,model_budget_analytic_budget_realization_budgeted,,1,0,0,0
+budget_analytic_budget_realization_unbudgeted_helper_all,budget_analytic.budget_realization_unbudgeted_helper - all,model_budget_analytic_budget_realization_unbudgeted_helper,,1,0,0,0
+budget_analytic_budget_realization_unbudgeted_all,budget_analytic.budget_realization_unbudgeted - all,model_budget_analytic_budget_realization_unbudgeted,,1,0,0,0
+budget_analytic_budget_realization_all,budget_analytic.budget_realization - all,model_budget_analytic_budget_realization,,1,0,0,0
