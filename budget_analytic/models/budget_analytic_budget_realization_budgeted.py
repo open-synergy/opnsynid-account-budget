@@ -41,7 +41,12 @@ class BudgetAnalyticBudgetRealizationBudgeted(models.Model):
             b.analytic_account_id AS analytic_account_id,
             a.account_id AS account_id,
             a.product_id AS product_id,
-            a.amount_subtotal AS amount_budgeted,
+            CASE
+                WHEN a.direction = 'revenue' THEN
+                    a.amount_subtotal
+                WHEN a.direction = 'cost' THEN
+                    -1.0 * a.amount_subtotal
+            END AS amount_budgeted,
             COALESCE(c.amount, 0.0) AS amount_realized
         """
         return select_str
