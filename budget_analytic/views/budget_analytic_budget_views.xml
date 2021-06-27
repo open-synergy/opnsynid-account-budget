@@ -216,7 +216,7 @@
                     <group name="group_1_2">
                         <field
                                     name="analytic_account_id"
-                                    domain="[('type','=','normal'),('state','=','open')]"
+                                    domain="[('type','=','normal')]"
                                 />
                     </group>
                 </group>

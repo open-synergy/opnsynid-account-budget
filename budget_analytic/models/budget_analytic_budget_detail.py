@@ -177,15 +177,17 @@ class BudgetAnalyticBudgetDetail(models.Model):
     )
     def onchange_uom_id(self):
         self.uom_id = False
+        if self.product_id:
+            self.uom_id = self.product_id.uom_id
 
     @api.onchange(
         "product_id",
         "pricelist_id",
-        "quantity",
     )
     def onchange_amount_unit(self):
         self.amount_unit = 0.0
         if self.product_id and self.pricelist_id:
+            # TODO: Qty aware computation
             price_unit = self.pricelist_id.price_get(
                 prod_id=self.product_id.id, qty=1.0
             )[self.pricelist_id.id]
