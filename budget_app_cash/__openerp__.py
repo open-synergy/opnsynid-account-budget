@@ -5,7 +5,7 @@
 {
     "name": "Budget Management - Cash",
     "version": "8.0.1.5.0",
-    "website": "https://opensynergy-indonesia.com",
+    "website": "https://simetri-sinergi.id",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",
     "license": "AGPL-3",
     "installable": True,

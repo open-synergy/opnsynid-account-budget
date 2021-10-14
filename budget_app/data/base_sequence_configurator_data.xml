@@ -1,20 +1,24 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!-- Copyright 2020 OpenSynergy Indonesia
      Copyright 2020 PT. Simetri Sinergi Indonesia
      License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl). -->
-
 <openerp>
 <data>
 <record id="base_sequence_budget_budget" model="base.sequence_configurator">
-    <field name="model_id" ref="budget_app.model_budget_budget"/>
-    <field name="sequence_field_id" search="[('model_id.model','=','budget.budget'),('name','=','name')]"/>
-    <field name="fallback_sequence_id" ref="budget_app.sequence_budget"/>
+    <field name="model_id" ref="budget_app.model_budget_budget" />
+    <field
+                name="sequence_field_id"
+                search="[('model_id.model','=','budget.budget'),('name','=','name')]"
+            />
+    <field name="fallback_sequence_id" ref="budget_app.sequence_budget" />
 </record>
 
 <record id="base_sequence_budget_budget_line" model="base.sequence_configurator_line">
-    <field name="generator_id" ref="base_sequence_budget_budget"/>
-    <field name="sequence" eval="1"/>
-    <field name="sequence_computation_code">result = document.type_id.sequence_id</field>
+    <field name="generator_id" ref="base_sequence_budget_budget" />
+    <field name="sequence" eval="1" />
+    <field
+                name="sequence_computation_code"
+            >result = document.type_id.sequence_id</field>
 </record>
 </data>
 </openerp>

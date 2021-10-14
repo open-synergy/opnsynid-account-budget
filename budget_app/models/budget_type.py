@@ -3,7 +3,7 @@
 # Copyright 2020 PT. Simetri Sinergi Indonesia
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
-from openerp import models, fields
+from openerp import fields, models
 
 
 class BudgetType(models.Model):
@@ -45,9 +45,7 @@ class BudgetType(models.Model):
         relation="rel_budget_type_2_account",
         column1="type_id",
         column2="account_id",
-        domain=[
-            ("type", "not in", ["view", "consolidation", "closed"])
-        ]
+        domain=[("type", "not in", ["view", "consolidation", "closed"])],
     )
     budget_confirm_grp_ids = fields.Many2many(
         string="Allow To Confirm Budget",
