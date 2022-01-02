@@ -32,4 +32,5 @@ class BudgetDetail(models.Model):
         string="Cash Realization",
         comodel_name="budget.detail_cash",
         inverse_name="detail_id",
+        copy=True,
     )
