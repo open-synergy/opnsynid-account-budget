@@ -2,8 +2,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 # pylint: disable=locally-disabled, manifest-required-author
 {
-    "name": "Budget Management",
-    "version": "8.0.2.10.0",
+    "name": "Financial Budget Management",
+    "version": "8.0.2.10.1",
     "category": "Invoicing",
     "website": "https://simetri-sinergi.id",
     "author": "OpenSynergy Indonesia, PT. Simetri Sinergi Indonesia",

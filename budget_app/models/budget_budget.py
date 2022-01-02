@@ -132,6 +132,7 @@ class BudgetBudget(models.Model):
         string="Details",
         comodel_name="budget.detail",
         inverse_name="budget_id",
+        copy=True,
         readonly=True,
         states={
             "draft": [
