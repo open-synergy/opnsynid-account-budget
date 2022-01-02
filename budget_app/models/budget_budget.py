@@ -61,6 +61,7 @@ class BudgetBudget(models.Model):
     name = fields.Char(
         string="# Budget",
         default="/",
+        copy=False,
         required=True,
         readonly=True,
         states={
