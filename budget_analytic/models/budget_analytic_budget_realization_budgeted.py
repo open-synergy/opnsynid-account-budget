@@ -66,7 +66,7 @@ class BudgetAnalyticBudgetRealizationBudgeted(models.Model):
     def _join(self):
         join_str = """
         JOIN budget_analytic_budget AS b ON a.budget_id = b.id
-        LEFT JOIN (
+        RIGHT JOIN (
             SELECT  c1.account_id,
                     c1.general_account_id,
                     c1.product_id,
